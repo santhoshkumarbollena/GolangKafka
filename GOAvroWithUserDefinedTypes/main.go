@@ -73,7 +73,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+fmt.Println()
+fmt.Println(binary)
+fmt.Println()
 	///Convert Native from Binary
 	native, _, err := codec.NativeFromBinary(binary)
 	if err != nil {
