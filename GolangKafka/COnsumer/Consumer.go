@@ -8,6 +8,7 @@ import (
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 	"github.com/linkedin/goavro"
 	"github.com/Shopify/sarama"
+	 "github.com/landoop/schema-registry"
 )
 var (
 	codec *goavro.Codec
@@ -66,7 +67,7 @@ func main() {
 				schema:=`{
 					"namespace": "my.namespace.com",
 					"type":	"record",
-					"name": "indentity",
+					"name": "value_TestingGolangKafkaObjects",
 					"fields": [
 						{ "name": "Name", "type": "string"},
 						{ "name": "Code", "type": "string"},
@@ -106,10 +107,14 @@ func main() {
 				//fmt.Printf("user out=%+v\n", userOut)
 			//	fmt.Println()
 				fmt.Println("Received messages", string(msg.Key), string(msg.Value))
-				//fmt.Println()
+				fmt.Println("key")
+				fmt.Println(string(msg.Key))
 				//fmt.Println(userOut)
 				fmt.Println(userOut.EnrollmentEndDate)
 				fmt.Println(userOut.EnrollmentStartDate)
+				client, _ := schemaregistry.NewClient(schemaregistry.DefaultUrl)
+				client.Subjects()
+				fmt.Println(client)
 				// Mem:=&Member{userOut}
 				// fmt.Println(Mem)
 			case <-signals:

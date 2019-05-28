@@ -8,6 +8,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/linkedin/goavro"
 )
+var schemaRegistryServers = []string{"http://localhost:8081"}
 var (
 	codec *goavro.Codec
 )
@@ -46,6 +47,8 @@ func main() {
 			panic(err)
 		}
 	}()
+
+
 	schema:=`{
 		"namespace": "my.namespace.com",
 		"type":	"record",
@@ -84,7 +87,7 @@ func main() {
 	}
 	//Sample Data
 	Member := &Member{
-		Name: "bollena santhosh ",
+		Name: "bollena kumar ",
 		Code:  "b15cs067",
 		Year:"2019",
 		EnrollmentStartDate: &Date{
@@ -121,6 +124,16 @@ func main() {
 	}
 	fmt.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", *topic, partition, offset)
 }
+
+
+
+
+
+
+
+
+
+
 func (u *Member) ToStringMap() map[string]interface{} {
 	datumIn := map[string]interface{}{
 		"Name": string(u.Name),
