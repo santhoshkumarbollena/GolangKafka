@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/dangkaka/go-kafka-avro"
 	"time"
+
+	"github.com/dangkaka/go-kafka-avro"
 )
 
 var kafkaServers = []string{"localhost:9092"}
@@ -13,14 +14,15 @@ var topic = "testObjects"
 
 func main() {
 	var n int
-	schema:=`{
+	schema := `{
 		"namespace": "my.namespace.com",
 		"type":	"record",
 		"name": "value_TestingGolangKafkaObjects",
 		"fields": [
 			{ "name": "Name", "type": "string"},
 			{ "name": "Code", "type": "string"},
-			{ "name": "Year", "type": "string" }	
+			{ "name": "enrollmentStartDate", "type": "string" }	,
+			{ "name": "enrollmentEndDate", "type": "string" }	
 		]
 	}`
 	producer, err := kafka.NewAvroProducer(kafkaServers, schemaRegistryServers)
@@ -36,10 +38,11 @@ func main() {
 }
 
 func addMsg(producer *kafka.AvroProducer, schema string) {
-	
+
 	value := `{
 		"Name": "santhosh",
-		"Year":"2019",
+		"enrollmentStartDate":"2019",
+		"enrollmentEndDate":"2019",
 		"Code":"b15"
 	}`
 	key := time.Now().String()
