@@ -27,7 +27,8 @@ var resultDateBwStartDateEndDate []member
 var resultStartDateBelowGivenDate []member
 
 func main() {
-	SettingCsvDataToRespectiveObject()
+	data := "1_enrollmentStartDate:2019-2-23,1_enrollmentEndDate:2019-8-25,1_name:santhosh,2_name:pranay,1_name:demo,2_enrollmentStartDate:2019-2-23,2_enrollmentEndDate:2019-8-25"
+	SettingCsvDataToRespectiveObject(data)
 	ResuletMembersRes := GetUnique()
 	fmt.Println(ResuletMembersRes)
 	//Integrating Two Tasks
@@ -48,8 +49,8 @@ func main() {
 }
 
 //SettingCsvDataToRespectiveObject to set data to respective Object
-func SettingCsvDataToRespectiveObject() {
-	data := "1_enrollmentStartDate:2019-2-23,1_enrollmentEndDate:2019-8-25,1_name:santhosh,2_name:pranay,1_name:demo,2_enrollmentStartDate:2019-2-23,2_enrollmentEndDate:2019-8-25"
+func SettingCsvDataToRespectiveObject(data string) {
+
 	CommaSeperatedData := strings.Split(data, ",")
 	mem := make(map[int]member)
 

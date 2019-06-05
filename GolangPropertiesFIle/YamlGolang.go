@@ -54,7 +54,7 @@ func main() {
 	}
 	//Assigning Properties data into a map
 	fmt.Printf("--- m:\n%v\n\n", m)
-
+	fmt.Println(m["c"])
 	d, err = yaml.Marshal(&m)
 	if err != nil {
 		log.Fatalf("error: %v", err)
