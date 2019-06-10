@@ -1,0 +1,18 @@
+//ResuletMembers consits of result members
+1{Y 1306 9999 2008-03-13 2008-04-21}
+2{Y 1306 9999 2009-08-13 2010-12-31}
+3{Y 1306 9999 2008-04-22 2009-08-12}
+4{Y 1306 9999 2008-01-01 2008-03-12}
+[{Y 1306 9999 2008-03-13 2008-04-21} {Y 1306 9999 2009-08-13 2010-12-31} {Y 1306 9999 2008-04-22 2009-08-12} {Y 1306 9999 2008-01-01 2008-03-12}]
+Members whose enrollment start date and end date in betweengiven date
+Enter date in year-month-day format:
+2008-4-4
+[{Y 1306 9999 2008-03-13 2008-04-21}]
+Enter date in day-month-year format to get wheather there are start dates below this date:
+2008-7-7
+true
+[{Y 1306 9999 2008-03-13 2008-04-21} {Y 1306 9999 2008-04-22 2009-08-12} {Y 1306 9999 2008-01-01 2008-03-12}]
+Members whose enrollment end date is near to given date
+Enter date in year-month-day to find near end date:
+2008-4-4
+{Y 1306 9999 2008-03-13 2008-04-21}
