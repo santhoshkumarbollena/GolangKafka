@@ -8,6 +8,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/linkedin/goavro"
 )
+
 var schemaRegistryServers = []string{"http://localhost:8081"}
 var (
 	codec *goavro.Codec
@@ -18,20 +19,22 @@ var (
 	topic      = kingpin.Flag("topic", "TestingGolangKafkaObjects").Default("TestingGolangKafkaObjects").String()
 	maxRetry   = kingpin.Flag("maxRetry", "Retry limit").Default("5").Int()
 )
+
 type Member struct {
-	Name string
-	Code  string
-	Year    string
+	Name                string
+	Code                string
+	Year                string
 	EnrollmentStartDate *Date
-	EnrollmentEndDate *Date
+	EnrollmentEndDate   *Date
 }
 
 // Address holds information about an address.
 type Date struct {
-	Day int64
+	Day   int64
 	Month int64
-	Year     int64
+	Year  int64
 }
+
 func main() {
 	kingpin.Parse()
 	config := sarama.NewConfig()
@@ -48,8 +51,7 @@ func main() {
 		}
 	}()
 
-
-	schema:=`{
+	schema := `{
 		"namespace": "my.namespace.com",
 		"type":	"record",
 		"name": "indentity",
@@ -87,17 +89,17 @@ func main() {
 	}
 	//Sample Data
 	Member := &Member{
-		Name: "bollena kumar ",
-		Code:  "b15cs067",
-		Year:"2019",
+		Name: "bollena santhosh kumar ",
+		Code: "b15cs067",
+		Year: "2019",
 		EnrollmentStartDate: &Date{
-			Day: 2,
-			Month:  2,
+			Day:   2,
+			Month: 2,
 			Year:  2016,
 		},
 		EnrollmentEndDate: &Date{
-			Day: 2,
-			Month:  2,
+			Day:   2,
+			Month: 2,
 			Year:  2018,
 		},
 	}
@@ -113,7 +115,6 @@ func main() {
 		panic(err)
 	}
 
-	
 	msg := &sarama.ProducerMessage{
 		Topic: *topic,
 		Value: sarama.StringEncoder(binary),
@@ -125,44 +126,34 @@ func main() {
 	fmt.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", *topic, partition, offset)
 }
 
-
-
-
-
-
-
-
-
-
 func (u *Member) ToStringMap() map[string]interface{} {
 	datumIn := map[string]interface{}{
 		"Name": string(u.Name),
-		"Year":  string(u.Year),
+		"Year": string(u.Year),
 		"Code": string(u.Code),
 	}
 
 	if u.EnrollmentStartDate != nil {
 		addDatum1 := map[string]interface{}{
-			"Day": int64(u.EnrollmentStartDate.Day),
-			"Month":     int64(u.EnrollmentStartDate.Month),
-			"Year":    int64(u.EnrollmentStartDate.Year),
+			"Day":   int64(u.EnrollmentStartDate.Day),
+			"Month": int64(u.EnrollmentStartDate.Month),
+			"Year":  int64(u.EnrollmentStartDate.Year),
 		}
 		if u.EnrollmentEndDate != nil {
 			addDatum2 := map[string]interface{}{
-				"Day": int64(u.EnrollmentEndDate.Day),
-				"Month":     int64(u.EnrollmentEndDate.Month),
-				"Year":    int64(u.EnrollmentEndDate.Year),
+				"Day":   int64(u.EnrollmentEndDate.Day),
+				"Month": int64(u.EnrollmentEndDate.Month),
+				"Year":  int64(u.EnrollmentEndDate.Year),
+			}
+
+			//important need namespace and record name
+			datumIn["EnrollmentStartDate"] = goavro.Union("my.namespace.com.enrollmentStartDate", addDatum1)
+			datumIn["EnrollmentEndDate"] = goavro.Union("my.namespace.com.enrollmentEndDate", addDatum2)
+
+		} else {
+			datumIn["EnrollmentStartDate"] = goavro.Union("null", nil)
+			datumIn["EnrollmentEndDate"] = goavro.Union("null", nil)
 		}
-
-		//important need namespace and record name
-		datumIn["EnrollmentStartDate"] = goavro.Union("my.namespace.com.enrollmentStartDate", addDatum1)
-		datumIn["EnrollmentEndDate"] = goavro.Union("my.namespace.com.enrollmentEndDate", addDatum2)
-
-	} else {
-		datumIn["EnrollmentStartDate"] = goavro.Union("null", nil)
-		datumIn["EnrollmentEndDate"] = goavro.Union("null", nil)
 	}
-}
 	return datumIn
 }
-

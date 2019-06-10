@@ -11,7 +11,7 @@ import (
 var data string
 
 func readData() {
-	b, err := ioutil.ReadFile("Properties.yml") // just pass the file name
+	b, err := ioutil.ReadFile("../GoLangProjectLayout/Properties.yml") // just pass the file name
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -30,35 +30,15 @@ type T struct {
 
 func main() {
 	readData()
-	t := T{}
 
-	err := yaml.Unmarshal([]byte(data), &t)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	//Printing data in Object or Stuctured Format
-	fmt.Printf("--- t:\n%v\n\n", t)
+	m := make(map[string]string)
 
-	d, err := yaml.Marshal(&t)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	//printing data as it present in Properties.yaml file
-	fmt.Printf("--- t dump:\n%s\n\n", string(d))
-
-	m := make(map[interface{}]interface{})
-
-	err = yaml.Unmarshal([]byte(data), &m)
+	err := yaml.Unmarshal([]byte(data), &m)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	//Assigning Properties data into a map
 	fmt.Printf("--- m:\n%v\n\n", m)
 	fmt.Println(m["c"])
-	d, err = yaml.Marshal(&m)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	//Printing data by MArshelling the unmarshelled data that is same as present in input file
-	fmt.Printf("--- m dump:\n%s\n\n", string(d))
+
 }

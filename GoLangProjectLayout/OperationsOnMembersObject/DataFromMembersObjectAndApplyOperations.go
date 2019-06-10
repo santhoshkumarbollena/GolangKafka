@@ -3,6 +3,7 @@ package OperationsOnMembersObject
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 	m "../../GoLangProjectLayout/Model"
 )
 
+var ff bool = false
 var resultDateBwStartDateEndDate []member
 var resultStartDateBelowGivenDate []member
 
@@ -22,7 +24,17 @@ func OperationsOnMembersObjectFunction() {
 	fmt.Println("Members whose enrollment start date and end date in between given date")
 	//res := []member(ResuletMembersRes)
 	membersindate := MembersInGivenDate(ResuletMembersRes)
-	fmt.Println(membersindate)
+	//fmt.Println(membersindate)
+	for i := 0; i < len(membersindate); i++ {
+		s := reflect.ValueOf(&membersindate[i]).Elem()
+		typeOfT := s.Type()
+
+		for i := 0; i < s.NumField(); i++ {
+			f := s.Field(i)
+			fmt.Printf("%d:  %s = %v\n", i,
+				typeOfT.Field(i).Name, f.Interface())
+		}
+	}
 	//"Members whose enrollment start date is prior to the given date"
 	membersStartDateGreaterThanDate, f := MembersWithStartDate(ResuletMembersRes)
 	//the following boolen tells us that is there any start date present below the given date")
@@ -49,10 +61,10 @@ func MembersWithStartDate(mems []member) ([]member, bool) {
 	var i int
 	isMemberPresentBeforeDate = false
 	for i = 0; i < len(mems); i++ {
-		if strings.Compare(mems[i].EnrollmentStartDate, "") == 0 {
+		if strings.Compare(mems[i].EnrollmentEffectiveDate, "") == 0 {
 			break
 		}
-		enrollmentStartDateSplit := strings.Split(mems[i].EnrollmentStartDate, "-")
+		enrollmentStartDateSplit := strings.Split(mems[i].EnrollmentEffectiveDate, "-")
 		esy, _ := strconv.ParseInt(enrollmentStartDateSplit[0], 10, 64)
 		esm, _ := strconv.ParseInt(enrollmentStartDateSplit[1], 10, 64)
 		esd, _ := strconv.ParseInt(enrollmentStartDateSplit[2], 10, 64)
@@ -61,6 +73,7 @@ func MembersWithStartDate(mems []member) ([]member, bool) {
 			resultStartDateBelowGivenDate = append(resultStartDateBelowGivenDate, mems[i])
 
 			isMemberPresentBeforeDate = true
+
 		}
 		if year == esy {
 			if month > esm {
@@ -96,17 +109,17 @@ func MembersInGivenDate(mems []member) []member {
 	var i int
 
 	for i = 0; i < len(mems); i++ {
-		if strings.Compare(mems[i].EnrollmentStartDate, "") == 0 {
+		if strings.Compare(mems[i].EnrollmentEffectiveDate, "") == 0 {
 			break
 		}
-		if strings.Compare(mems[i].EnrollmentEndDate, "") == 0 {
+		if strings.Compare(mems[i].EnrollmentTerminationDate, "") == 0 {
 			break
 		}
-		enrollmentStartDateSplit := strings.Split(mems[i].EnrollmentStartDate, "-")
+		enrollmentStartDateSplit := strings.Split(mems[i].EnrollmentEffectiveDate, "-")
 		esy, _ := strconv.ParseInt(enrollmentStartDateSplit[0], 10, 64)
 		esm, _ := strconv.ParseInt(enrollmentStartDateSplit[1], 10, 64)
 		esd, _ := strconv.ParseInt(enrollmentStartDateSplit[2], 10, 64)
-		enrollmentEndDateSplit := strings.Split(mems[i].EnrollmentEndDate, "-")
+		enrollmentEndDateSplit := strings.Split(mems[i].EnrollmentTerminationDate, "-")
 		eey, _ := strconv.ParseInt(enrollmentEndDateSplit[0], 10, 64)
 		eem, _ := strconv.ParseInt(enrollmentEndDateSplit[1], 10, 64)
 		eed, _ := strconv.ParseInt(enrollmentEndDateSplit[2], 10, 64)
@@ -165,10 +178,10 @@ func MembersnearEndDate(mems []member) member {
 
 	var near member
 	for i = 0; i < len(mems); i++ {
-		if strings.Compare(mems[i].EnrollmentEndDate, "") == 0 {
+		if strings.Compare(mems[i].EnrollmentTerminationDate, "") == 0 {
 			break
 		}
-		enrollmentDateSplit := strings.Split(mems[i].EnrollmentEndDate, "-")
+		enrollmentDateSplit := strings.Split(mems[i].EnrollmentTerminationDate, "-")
 		y, _ := strconv.ParseInt(enrollmentDateSplit[0], 10, 64)
 		m, _ := strconv.ParseInt(enrollmentDateSplit[1], 10, 64)
 		d, _ := strconv.ParseInt(enrollmentDateSplit[2], 10, 64)

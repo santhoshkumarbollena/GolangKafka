@@ -2,18 +2,20 @@ package main
 
 import (
 	"fmt"
+
+	cluster "github.com/bsm/sarama-cluster"
 	"github.com/dangkaka/go-kafka-avro"
-	"github.com/bsm/sarama-cluster"
 )
 
 var kafkaServers = []string{"localhost:9092"}
 var schemaRegistryServers = []string{"http://localhost:8081"}
-var topic = "testObjects"
+var topic = "testObjectsnew"
 
 func main() {
 	consumerCallbacks := kafka.ConsumerCallbacks{
 		OnDataReceived: func(msg kafka.Message) {
 			fmt.Println(msg)
+			fmt.Println("--------------------------------------")
 		},
 		OnError: func(err error) {
 			fmt.Println("Consumer error", err)

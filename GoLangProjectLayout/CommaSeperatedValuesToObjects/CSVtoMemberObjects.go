@@ -1,14 +1,15 @@
 package CommaSeperatedValuesToObjects
 
 import (
+	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 
-	t "../../GoLangProjectLayout/HiveGoConnection"
-	m "../../GoLangProjectLayout/Model"
+	ModelMember "../../GoLangProjectLayout/Model"
 )
 
-type member = m.Member
+type member = ModelMember.Member
 
 var data string
 
@@ -24,8 +25,8 @@ var result map[int]member
 
 //CSVDataToMemberObjects
 func CSVDataToMemberObjects() {
-
-	data = t.GetDataFromHive()
+	ModelMember.Demo()
+	data = "1_enrollmentEffectiveDate:2008-03-13,1_enrollmentTerminationDate:2008-04-21,1_offshoreRestrictedIndicator:Y,1_profileIdentifier:1306,1_secureClassIdentifier:9999,2_enrollmentEffectiveDate:2009-08-13,2_enrollmentTerminationDate:2010-12-31,2_offshoreRestrictedIndicator:Y,2_profileIdentifier:1306,2_secureClassIdentifier:9999,3_enrollmentEffectiveDate:2008-04-22,3_enrollmentTerminationDate:2009-08-12,3_offshoreRestrictedIndicator:Y,3_profileIdentifier:1306,3_secureClassIdentifier:9999,4_enrollmentEffectiveDate:2008-01-01,4_enrollmentTerminationDate:2008-03-12,4_offshoreRestrictedIndicator:Y,4_profileIdentifier:1306,4_secureClassIdentifier:9999"
 }
 func GetMembersObject() []member {
 	CSVDataToMemberObjects()
@@ -55,17 +56,20 @@ func SettingCsvDataToRespectiveObject(data string) {
 		members = append(members, mem)     //each member is added to members slice
 
 		//Assigning values to respctve feilds
-		if strings.Compare(objectKeyAndValue[0], "enrollmentStartDate") == 0 {
-			mem[i1] = member{EnrollmentStartDate: objectKeyAndValue[1]}
+		if strings.Compare(objectKeyAndValue[0], "enrollmentEffectiveDate") == 0 {
+			mem[i1] = member{EnrollmentEffectiveDate: objectKeyAndValue[1]}
 		}
-		if strings.Compare(objectKeyAndValue[0], "name") == 0 {
-			mem[i1] = member{Name: objectKeyAndValue[1]}
+		if strings.Compare(objectKeyAndValue[0], "offshoreRestrictedIndicator") == 0 {
+			mem[i1] = member{OffshoreRestrictedIndicator: objectKeyAndValue[1]}
 		}
-		if strings.Compare(objectKeyAndValue[0], "enrollmentEndDate") == 0 {
-			mem[i1] = member{EnrollmentEndDate: objectKeyAndValue[1]}
+		if strings.Compare(objectKeyAndValue[0], "enrollmentTerminationDate") == 0 {
+			mem[i1] = member{EnrollmentTerminationDate: objectKeyAndValue[1]}
 		}
-		if strings.Compare(objectKeyAndValue[0], "code") == 0 {
-			mem[i1] = member{Code: objectKeyAndValue[1]}
+		if strings.Compare(objectKeyAndValue[0], "profileIdentifier") == 0 {
+			mem[i1] = member{ProfileIdentifier: objectKeyAndValue[1]}
+		}
+		if strings.Compare(objectKeyAndValue[0], "secureClassIdentifier") == 0 {
+			mem[i1] = member{SecureClassIdentifier: objectKeyAndValue[1]}
 		}
 
 	}
@@ -91,32 +95,57 @@ func GetUnique() []member {
 	//listOfUniqueKeys consists of non repeted keys
 	for j = 0; j < len(listOfUniqueKeys); j++ {
 		key := listOfUniqueKeys[j]
-		var resultname string
-		var resultEnrolmentStartDate string
-		var resultEnrolmentEndDate string
-		var resultCode string
+		var resultOffshoreRestrictedIndicator string
+		var resultEnrollmentEffectiveDate string
+		var resultEnrollmentTerminationDate string
+		var resultProfileIdentifier string
+		var resultSecureClassIdentifier string
 		for i = 0; i < len(members); i++ {
 			if members[i][key] != (member{}) {
-				if strings.Compare(members[i][key].Name, "") != 0 {
-					resultname = members[i][key].Name
+				if strings.Compare(members[i][key].OffshoreRestrictedIndicator, "") != 0 {
+					resultOffshoreRestrictedIndicator = members[i][key].OffshoreRestrictedIndicator
 				}
-				if strings.Compare(members[i][key].EnrollmentStartDate, "") != 0 {
-					resultEnrolmentStartDate = members[i][key].EnrollmentStartDate
+				if strings.Compare(members[i][key].EnrollmentEffectiveDate, "") != 0 {
+					resultEnrollmentEffectiveDate = members[i][key].EnrollmentEffectiveDate
 				}
-				if strings.Compare(members[i][key].EnrollmentEndDate, "") != 0 {
-					resultEnrolmentEndDate = members[i][key].EnrollmentEndDate
+				if strings.Compare(members[i][key].EnrollmentTerminationDate, "") != 0 {
+					resultEnrollmentTerminationDate = members[i][key].EnrollmentTerminationDate
 				}
-				if strings.Compare(members[i][key].Code, "") != 0 {
-					resultCode = members[i][key].Code
+				if strings.Compare(members[i][key].ProfileIdentifier, "") != 0 {
+					resultProfileIdentifier = members[i][key].ProfileIdentifier
+				}
+				if strings.Compare(members[i][key].SecureClassIdentifier, "") != 0 {
+					resultSecureClassIdentifier = members[i][key].SecureClassIdentifier
 				}
 
 			}
 
 		}
 
-		ResuletMember := member{Name: resultname, EnrollmentStartDate: resultEnrolmentStartDate, EnrollmentEndDate: resultEnrolmentEndDate, Code: resultCode}
+		ResuletMember := member{OffshoreRestrictedIndicator: resultOffshoreRestrictedIndicator, EnrollmentEffectiveDate: resultEnrollmentEffectiveDate, EnrollmentTerminationDate: resultEnrollmentTerminationDate, ProfileIdentifier: resultProfileIdentifier, SecureClassIdentifier: resultSecureClassIdentifier}
 
 		ResuletMembers = append(ResuletMembers, ResuletMember)
+
+	}
+	//fmt.Println(ResuletMembers)
+	m := make(map[int]string)
+	m[1] = "OffshoreRestrictedIndicator"
+	m[2] = "ProfileIdentifier"
+	m[3] = "SecureClassIdentifier"
+	m[4] = "EnrollmentEffectiveDate"
+	m[5] = "EnrollmentTerminationDate"
+	for i = 0; i < len(ResuletMembers); i++ {
+		fmt.Println(listOfUniqueKeys[i])
+		//fmt.Println(ResuletMembers[i])
+
+		s := reflect.ValueOf(&ResuletMembers[i]).Elem()
+		typeOfT := s.Type()
+
+		for i := 0; i < s.NumField(); i++ {
+			f := s.Field(i)
+			fmt.Printf("%d:  %s = %v\n", i,
+				typeOfT.Field(i).Name, f.Interface())
+		}
 
 	}
 	return ResuletMembers
