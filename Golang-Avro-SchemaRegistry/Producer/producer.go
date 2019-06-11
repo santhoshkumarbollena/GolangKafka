@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/dangkaka/go-kafka-avro"
+	"github.com/linkedin/goavro"
 )
 
 var kafkaServers = []string{"localhost:9092"}
@@ -22,6 +23,7 @@ type Member struct {
 
 func main() {
 	var n int
+	//schema for message
 	schema := `{
 		"namespace": "my.namespace.com",
 		"type":	"record",
@@ -46,6 +48,14 @@ func main() {
 	}
 }
 
+var (
+	codec *goavro.Codec
+)
+
+type Key struct {
+	KeyFeild string
+}
+
 func addMsg(producer *kafka.AvroProducer, schema string) {
 
 	// value := `{
@@ -54,19 +64,62 @@ func addMsg(producer *kafka.AvroProducer, schema string) {
 	// 	"enrollmentEndDate":"2019",
 	// 	"Code":"b15"
 	// }`
-	a := &Member{"pranay Kumar ", "9999", "Y", "2015", "2019"}
 
+	//schema for key
+	schemakey := `{
+		"namespace": "my.namespace.com",
+		"type":	"record",
+		"name": "value_TestingGolangKafkaObjectsKey",
+		"fields": [
+			{ "name": "KeyFeild", "type": "string"}
+		]
+	}`
+	//Assigning schema to Codec
+	codec, err := goavro.NewCodec(string(schemakey))
+	if err != nil {
+		panic(err)
+	}
+	//Sample Data
+	a := &Member{"pranay Kumar bollena ", "9999", "Y", "2015", "2019"}
+	//concat ProfIden and SecureClassIden to generate key
+	Key := &Key{a.ProfileIdentifier + a.SecureClassIdentifier}
+
+	//fmt.Printf("user in=%+v\n", Key)
+	//fmt.Printf((String)codec)
+	///Convert Binary From Native
+	//fmt.Println()
+	//fmt.Println(Key.ToStringMap())
+	//fmt.Println()
+
+	//COverting key to binary format
+	binary, err := codec.BinaryFromNative(nil, Key.ToStringMap())
+	if err != nil {
+		panic(err)
+	}
+	//fmt.Println()
+	//fmt.Println(binary)
+	//s := string(binary)
+
+	//Converting member type to string because string to byte can be converted easyly
 	out, err := json.Marshal(a)
 	if err != nil {
 		panic(err)
 	}
 	value := string(out)
-	key := a.ProfileIdentifier + a.SecureClassIdentifier
-
-	err = producer.Add(topic, schema, []byte(key), []byte(value))
+	//sending message from producer
+	err = producer.Add(topic, schema, []byte(binary), []byte(value))
 	//fmt.Println(key)
 	//fmt.Println(value)
 	if err != nil {
 		fmt.Printf("Could not add a msg: %s", err)
 	}
+}
+
+//Mapping KeyFeild to Avro
+func (u *Key) ToStringMap() map[string]interface{} {
+	datumIn := map[string]interface{}{
+		"KeyFeild": string(u.KeyFeild),
+	}
+
+	return datumIn
 }

@@ -14,13 +14,9 @@ func main() {
 	schema := `{
 		"namespace": "my.namespace.com",
 		"type":	"record",
-		"name": "value_TestingGolangKafkaObjects",
+		"name": "value_TestingGolangKafkaObjectsKey",
 		"fields": [
-			{ "name": "OffshoreRestrictedIndicator", "type": "string"},
-			{ "name": "ProfileIdentifier", "type": "string"},
-			{ "name": "SecureClassIdentifier", "type": "string" }	,
-			{ "name": "EnrollmentEffectiveDate", "type": "string" }	,
-			{ "name": "EnrollmentTerminationDate", "type": "string" }
+			{ "name": "KeyFeild", "type": "string"}
 		]
 	}`
 
@@ -30,7 +26,7 @@ func main() {
 		panic(err)
 	}
 	//Sample Data
-	Member := &Member{"pranay Kumar ", "9999", "Y", "2015", "2019"}
+	Member := &Key{"pranay Kumar "}
 
 	fmt.Printf("user in=%+v\n", Member)
 	//fmt.Printf((String)codec)
@@ -63,53 +59,29 @@ func main() {
 }
 
 // User holds information about a user.
-type Member struct {
-	OffshoreRestrictedIndicator string
-	ProfileIdentifier           string
-	SecureClassIdentifier       string
-	EnrollmentEffectiveDate     string
-	EnrollmentTerminationDate   string
+type Key struct {
+	KeyFeild string
 }
 
 // Address holds information about an address.
 
 // ToStringMap returns a map representation of the User.
-func (u *Member) ToStringMap() map[string]interface{} {
+func (u *Key) ToStringMap() map[string]interface{} {
 	datumIn := map[string]interface{}{
-		"OffshoreRestrictedIndicator": string(u.OffshoreRestrictedIndicator),
-		"ProfileIdentifier":           string(u.ProfileIdentifier),
-		"SecureClassIdentifier":       string(u.SecureClassIdentifier),
-		"EnrollmentEffectiveDate":     string(u.EnrollmentEffectiveDate),
-		"EnrollmentTerminationDate":   string(u.EnrollmentTerminationDate),
+		"KeyFeild": string(u.KeyFeild),
 	}
 
 	return datumIn
 }
 
 //StringMapToUser returns a User from a map representation of the User.
-func StringMapToMember(data map[string]interface{}) *Member {
-	ind := &Member{}
+func StringMapToMember(data map[string]interface{}) *Key {
+	ind := &Key{}
 	for k, v := range data {
 		switch k {
-		case "OffshoreRestrictedIndicator":
+		case "KeyFeild":
 			if value, ok := v.(string); ok {
-				ind.OffshoreRestrictedIndicator = value
-			}
-		case "ProfileIdentifier":
-			if value, ok := v.(string); ok {
-				ind.ProfileIdentifier = value
-			}
-		case "SecureClassIdentifier":
-			if value, ok := v.(string); ok {
-				ind.SecureClassIdentifier = value
-			}
-		case "EnrollmentEffectiveDate":
-			if value, ok := v.(string); ok {
-				ind.EnrollmentEffectiveDate = value
-			}
-		case "EnrollmentTerminationDate":
-			if value, ok := v.(string); ok {
-				ind.EnrollmentTerminationDate = value
+				ind.KeyFeild = value
 			}
 
 		}

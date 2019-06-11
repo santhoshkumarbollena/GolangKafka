@@ -15,6 +15,7 @@ func main() {
 	consumerCallbacks := kafka.ConsumerCallbacks{
 		OnDataReceived: func(msg kafka.Message) {
 			fmt.Println(msg)
+			fmt.Println(msg.Key)
 			fmt.Println("--------------------------------------")
 		},
 		OnError: func(err error) {
