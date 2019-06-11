@@ -9,7 +9,7 @@ import (
 
 var kafkaServers = []string{"localhost:9092"}
 var schemaRegistryServers = []string{"http://localhost:8081"}
-var topic = "testObjectsnew"
+var topic = "testMember"
 
 func main() {
 	consumerCallbacks := kafka.ConsumerCallbacks{

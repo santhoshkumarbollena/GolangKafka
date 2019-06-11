@@ -10,13 +10,14 @@ import (
 
 var kafkaServers = []string{"localhost:9092"}
 var schemaRegistryServers = []string{"http://localhost:8081"}
-var topic = "testObjectsnew"
+var topic = "testMember"
 
-type member struct {
-	Name                string
-	EnrollmentStartDate string
-	EnrollmentEndDate   string
-	Code                string
+type Member struct {
+	OffshoreRestrictedIndicator string
+	ProfileIdentifier           string
+	SecureClassIdentifier       string
+	EnrollmentEffectiveDate     string
+	EnrollmentTerminationDate   string
 }
 
 func main() {
@@ -26,10 +27,11 @@ func main() {
 		"type":	"record",
 		"name": "value_TestingGolangKafkaObjects",
 		"fields": [
-			{ "name": "Name", "type": "string"},
-			{ "name": "Code", "type": "string"},
-			{ "name": "EnrollmentStartDate", "type": "string" }	,
-			{ "name": "EnrollmentEndDate", "type": "string" }	
+			{ "name": "OffshoreRestrictedIndicator", "type": "string"},
+			{ "name": "ProfileIdentifier", "type": "string"},
+			{ "name": "SecureClassIdentifier", "type": "string" }	,
+			{ "name": "EnrollmentEffectiveDate", "type": "string" }	,
+			{ "name": "EnrollmentTerminationDate", "type": "string" }
 		]
 	}`
 	producer, err := kafka.NewAvroProducer(kafkaServers, schemaRegistryServers)
@@ -52,17 +54,18 @@ func addMsg(producer *kafka.AvroProducer, schema string) {
 	// 	"enrollmentEndDate":"2019",
 	// 	"Code":"b15"
 	// }`
-	a := &member{"santhu bollena its working", "2015", "2019", "b15cs067"}
+	a := &Member{"pranay Kumar ", "9999", "Y", "2015", "2019"}
 
 	out, err := json.Marshal(a)
 	if err != nil {
 		panic(err)
 	}
 	value := string(out)
-	key := a.Code
+	key := a.ProfileIdentifier + a.SecureClassIdentifier
+
 	err = producer.Add(topic, schema, []byte(key), []byte(value))
-	fmt.Println(key)
-	fmt.Println(value)
+	//fmt.Println(key)
+	//fmt.Println(value)
 	if err != nil {
 		fmt.Printf("Could not add a msg: %s", err)
 	}
