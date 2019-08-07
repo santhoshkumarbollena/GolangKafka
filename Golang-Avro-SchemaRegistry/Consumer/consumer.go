@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	cluster "github.com/bsm/sarama-cluster"
@@ -14,45 +15,71 @@ var kafkaServers = []string{"localhost:9092"}
 var schemaRegistryServers = []string{"http://localhost:8081"}
 var topic = "testMessage1"
 
-type Student struct {
-	ApplicationLogs string `json:"ApplicationLogs"`
-}
-
 func main() {
 	consumerCallbacks := kafka.ConsumerCallbacks{
 		OnDataReceived: func(msg kafka.Message) {
 			fmt.Println(msg.Value)
 			fmt.Println(msg.Key)
 			fmt.Println("--------------------------------------")
-			KEY := msg.Key
-			fmt.Println()
+			// KEY := msg.Key
+			// fmt.Println()
 
+			// reqBody := []byte(msg.Value)
+
+			// // 	// update our global Articles array to include
+			// // 	// our new Article
+
+			// fmt.Println(string(reqBody))
+
+			// fmt.Println("demo")
+			// fmt.Println(KEY)
+			// fmt.Println(string(reqBody))
+			// //RequestBodyFor2ndService, _ := json.Marshal(Student)
+			// //Response2ndService, _ := http.Put("http://localhost:9200/applicationlogs/applicationlog/"+KEY, "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
+			// Response2ndService, _ := http.Post("http://localhost:9200/applicationlogs/applicationlog/"+KEY, "application/json", bytes.NewBuffer(reqBody))
+			// fmt.Println(Response2ndService)
+			// //fmt.Println("here4")
+			// //ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
+			// //fmt.Println()
+
+			// //s := string(ResponseBody)
+			// //fmt.Println("here5")
+			// //json.Unmarshal([]byte(s), &ResponseBody)
+
+			//vars := mux.Vars(r)
+
+			//strings.Join(kk, msg.Value)
+			KEY := "pra"
+			// 	fmt.Println()
+			//   var Students []Student
+			// 	reqBody, _ := ioutil.ReadAll(r.Body)
+			// 	fmt.Println(string(reqBody))
+			// 	var Student Student
+			// 	json.Unmarshal(reqBody, &Student)
+			// // 	// update our global Articles array to include
+			// // 	// our new Article
+			// 	Students = append(Students, Student)
 			reqBody := []byte(msg.Value)
-
-			// 	// update our global Articles array to include
-			// 	// our new Article
-			var Student Student
-
-			fmt.Println(string(reqBody))
-			json.Unmarshal(reqBody, &Student)
-
-			Student.ApplicationLogs = msg.Value
-
-			fmt.Println(Student)
-
-			fmt.Println("demo")
-			fmt.Println(string(reqBody))
+			//fmt.Println(Student)
 			//RequestBodyFor2ndService, _ := json.Marshal(Student)
 			//Response2ndService, _ := http.Put("http://localhost:9200/applicationlogs/applicationlog/"+KEY, "application/json", bytes.NewBuffer(RequestBodyFor2ndService))
-			Response2ndService, _ := http.Post("http://localhost:9200/applicationlogs/applicationlog/"+KEY, "application/json", bytes.NewBuffer([]byte(reqBody)))
+			fmt.Println("demo")
+			fmt.Println(KEY)
+			fmt.Println(string(reqBody))
+			Response2ndService, _ := http.Post("http://localhost:9200/applicationlogs/applicationlog/"+KEY, "application/json", bytes.NewBuffer(reqBody))
+			fmt.Println()
 			fmt.Println(Response2ndService)
+			defer Response2ndService.Body.Close()
 			//fmt.Println("here4")
-			//ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
+			ResponseBody, _ := ioutil.ReadAll(Response2ndService.Body)
 			//fmt.Println()
 
-			//s := string(ResponseBody)
+			s := string(ResponseBody)
 			//fmt.Println("here5")
-			//json.Unmarshal([]byte(s), &ResponseBody)
+			json.Unmarshal([]byte(s), &ResponseBody)
+
+			//json.NewEncoder(w).Encode(s)
+			fmt.Println("after")
 
 		},
 		OnError: func(err error) {
