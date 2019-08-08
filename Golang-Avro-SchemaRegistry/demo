@@ -1,0 +1,49 @@
+go run:
+
+go run listObjects.go
+
+zookeeper :
+
+sh bin/zookeeper-server-start.sh config/zookeeper.properties
+
+kafka:
+
+sh bin/kafka-server-start.sh config/server.properties
+
+topic:
+
+./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic TestingGolangKafkaObjects
+
+
+
+localhost:2181
+
+./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic sampleTopic
+
+
+kafka producer:
+
+./kafka-console-producer.sh --broker-list localhost:9092 --topic sampleTopic
+
+kafka consumer:
+
+./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic sampleTopic --from-beginning
+
+
+kafka connectors:
+
+bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties config/connect-file-sink.properties
+
+
+kafka consumer connector changes subscription:
+
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic connect-test --from-beginning
+
+
+golang kafka:
+
+go get github.com/Shopify/sarama
+
+go get gopkg.in/alecthomas/kingpin.v2
+
+
